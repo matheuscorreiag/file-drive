@@ -4,26 +4,21 @@ import { v } from "convex/values";
 export const createFile = mutation({
   args: {
     name: v.string(),
+    orgId: v.string(),
   },
   handler: async (ctx, args) => {
-    const identidy = await ctx.auth.getUserIdentity();
-
-    if (!identidy) {
-      throw new Error("Not logged in");
-    }
-
-    await ctx.db.insert("files", { name: args.name });
+    await ctx.db.insert("files", { name: args.name, orgId: args.orgId });
   },
 });
 
 export const getFile = query({
-  args: {},
-  async handler(ctx) {
-    const identidy = await ctx.auth.getUserIdentity();
-
-    if (!identidy) {
-      throw new Error("Not logged in");
-    }
-    return await ctx.db.query("files").collect();
+  args: {
+    orgId: v.string(),
+  },
+  async handler(ctx, args) {
+    return await ctx.db
+      .query("files")
+      .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId!))
+      .collect();
   },
 });
