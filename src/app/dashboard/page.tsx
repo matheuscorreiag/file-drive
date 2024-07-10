@@ -1,16 +1,17 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 
 export default function Dashboard() {
-  const user = useQuery(api.user.getActualUser);
+  const createFile = useMutation(api.files.createFile);
+  const files = useQuery(api.files.getFile);
 
-  console.log("user: ", user);
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>User: {user?.name}</p>
+      <button onClick={() => createFile({ name: "test2" })}>Create File</button>
+      {files?.map((file) => <div key={file._id}>{file.name}</div>)}
     </div>
   );
 }
