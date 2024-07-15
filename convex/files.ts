@@ -22,6 +22,7 @@ export const createFile = mutation({
   args: {
     name: v.string(),
     orgId: v.string(),
+    fileId: v.id("_storage"),
   },
   handler: async (ctx, args) => {
     const identidy = await ctx.auth.getUserIdentity();
@@ -39,7 +40,11 @@ export const createFile = mutation({
       throw new ConvexError("Not authorized");
     }
 
-    await ctx.db.insert("files", { name: args.name, orgId: args.orgId });
+    await ctx.db.insert("files", {
+      name: args.name,
+      orgId: args.orgId,
+      fileId: args.fileId,
+    });
   },
 });
 
@@ -53,4 +58,14 @@ export const getFile = query({
       .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId!))
       .collect();
   },
+});
+
+export const generateUploadUrl = mutation(async (ctx) => {
+  const identidy = await ctx.auth.getUserIdentity();
+
+  if (!identidy) {
+    throw new ConvexError("Not authorized");
+  }
+
+  return await ctx.storage.generateUploadUrl();
 });
