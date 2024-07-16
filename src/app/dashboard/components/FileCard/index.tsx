@@ -29,14 +29,27 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
+import { useToast } from "@/components/ui/use-toast";
 
 type FileCardProps = {
   file: Doc<"files">;
 };
 
 function FileCardActions({ file }: FileCardProps) {
+  const { toast } = useToast();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const deleteFile = useMutation(api.files.deleteFile);
+
+  function handleDelete() {
+    deleteFile({ fileId: file._id });
+    setIsAlertOpen(false);
+
+    toast({
+      title: "File deleted",
+      description: "Your file has been deleted",
+      variant: "success",
+    });
+  }
   return (
     <>
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
@@ -50,12 +63,7 @@ function FileCardActions({ file }: FileCardProps) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                deleteFile({ fileId: file._id });
-                setIsAlertOpen(false);
-              }}
-            >
+            <AlertDialogAction onClick={handleDelete}>
               Continue
             </AlertDialogAction>
           </AlertDialogFooter>
