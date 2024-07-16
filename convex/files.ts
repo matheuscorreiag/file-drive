@@ -69,3 +69,34 @@ export const generateUploadUrl = mutation(async (ctx) => {
 
   return await ctx.storage.generateUploadUrl();
 });
+
+export const deleteFile = mutation({
+  args: {
+    fileId: v.id("files"),
+  },
+  async handler(ctx, args) {
+    const identidy = await ctx.auth.getUserIdentity();
+
+    if (!identidy) {
+      throw new ConvexError("Not authorized");
+    }
+
+    const file = await ctx.db.get(args.fileId);
+
+    if (!file) {
+      throw new ConvexError("File not found");
+    }
+
+    const hasAccess = await hasAcessToOrg(
+      ctx,
+      identidy.tokenIdentifier,
+      file.orgId
+    );
+
+    if (!hasAccess) {
+      throw new ConvexError("Not authorized");
+    }
+
+    await ctx.db.delete(args.fileId);
+  },
+});

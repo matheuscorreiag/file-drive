@@ -4,6 +4,7 @@ import { UploadButton } from "@/app/dashboard/components/UploadButton";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { useOrganization, useUser } from "@clerk/clerk-react";
+import { FileCard } from "@/app/dashboard/components/FileCard";
 
 export default function Dashboard() {
   const organization = useOrganization();
@@ -17,13 +18,15 @@ export default function Dashboard() {
   const files = useQuery(api.files.getFile, orgId ? { orgId } : "skip");
 
   return (
-    <div className="container mx-auto pt-24">
-      <div className="flex justify-between items-center">
+    <div className="container mx-auto pt-12">
+      <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Your Files</h1>
         <UploadButton />
       </div>
 
-      {files?.map((file) => <div key={file._id}>{file.name}</div>)}
+      <div className="grid grid-cols-4 gap-4">
+        {files?.map((file) => <FileCard key={file._id} file={file} />)}
+      </div>
     </div>
   );
 }
