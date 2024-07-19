@@ -1,13 +1,13 @@
 "use client";
 
-import { UploadButton } from "@/app/dashboard/components/UploadButton";
+import Image from "next/image";
+import { UploadButton } from "@/app/dashboard/files/components/UploadButton";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { useOrganization, useUser } from "@clerk/clerk-react";
-import { FileCard } from "@/app/dashboard/components/FileCard";
-import Image from "next/image";
+import { FileCard } from "@/app/dashboard/files/components/FileCard";
 import { Loader2 } from "lucide-react";
-import { SearchBar } from "@/app/dashboard/components/SearchBar";
+import { SearchBar } from "@/app/dashboard/files/components/SearchBar";
 import { useState } from "react";
 
 function Placeholder() {
@@ -24,7 +24,7 @@ function Placeholder() {
     </div>
   );
 }
-export default function Dashboard() {
+export function FileBrowser({ title }: { title: string }) {
   const organization = useOrganization();
   const user = useUser();
   const [query, setQuery] = useState("");
@@ -38,7 +38,7 @@ export default function Dashboard() {
   const isLoading = files === undefined;
 
   return (
-    <div className="container mx-auto pt-12">
+    <div>
       {isLoading && (
         <div className="flex flex-col gap-8 w-full items-center mt-24">
           <Loader2 className="h-32 w-32 animate-spin text-gray-700" />
@@ -49,7 +49,7 @@ export default function Dashboard() {
       {!isLoading && (
         <>
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-4xl font-bold">Your Files</h1>
+            <h1 className="text-4xl font-bold">{title}</h1>
             <SearchBar query={query} setQuery={setQuery} />
             <UploadButton />
           </div>

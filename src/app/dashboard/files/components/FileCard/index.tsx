@@ -37,7 +37,6 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
-import { getFileUrl } from "../../../../../convex/files";
 
 type FileCardProps = {
   file: Doc<"files">;

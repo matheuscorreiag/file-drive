@@ -27,7 +27,7 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { api } from "@/../convex/_generated/api";
-import { Doc } from "../../../../../convex/_generated/dataModel";
+import { Doc } from "@/../convex/_generated/dataModel";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
