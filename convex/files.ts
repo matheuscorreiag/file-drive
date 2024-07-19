@@ -54,12 +54,23 @@ export const createFile = mutation({
 export const getFile = query({
   args: {
     orgId: v.string(),
+    query: v.optional(v.string()),
   },
   async handler(ctx, args) {
-    return await ctx.db
+    const files = await ctx.db
       .query("files")
       .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId!))
       .collect();
+
+    const query = args.query;
+
+    if (!query) {
+      return files;
+    }
+
+    return files.filter((file) => {
+      return file.name.toLowerCase().includes(query.toLowerCase());
+    });
   },
 });
 
