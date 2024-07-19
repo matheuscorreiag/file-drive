@@ -1,6 +1,7 @@
 import { mutation, MutationCtx, query, QueryCtx } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
 import { getUser } from "./users";
+import { fileTypes } from "./schema";
 
 async function hasAcessToOrg(
   ctx: QueryCtx | MutationCtx,
@@ -23,6 +24,7 @@ export const createFile = mutation({
     name: v.string(),
     orgId: v.string(),
     fileId: v.id("_storage"),
+    type: fileTypes,
   },
   handler: async (ctx, args) => {
     const identidy = await ctx.auth.getUserIdentity();
@@ -44,6 +46,7 @@ export const createFile = mutation({
       name: args.name,
       orgId: args.orgId,
       fileId: args.fileId,
+      type: args.type,
     });
   },
 });
@@ -98,5 +101,21 @@ export const deleteFile = mutation({
     }
 
     await ctx.db.delete(args.fileId);
+  },
+});
+
+export const getFileUrl = query({
+  args: {
+    fileId: v.id("_storage"),
+  },
+
+  async handler(ctx, args) {
+    const fileUrl = await ctx.storage.getUrl(args.fileId);
+
+    if (!fileUrl) {
+      throw new ConvexError("File not found");
+    }
+
+    return fileUrl;
   },
 });
