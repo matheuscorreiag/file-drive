@@ -13,6 +13,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
@@ -20,6 +21,8 @@ import {
   GanttChartIcon,
   ImageIcon,
   MoreVertical,
+  StarHalf,
+  StarIcon,
   TrashIcon,
 } from "lucide-react";
 import { ReactNode, useState } from "react";
@@ -37,15 +40,24 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 type FileCardProps = {
   file: Doc<"files">;
+  favorites: Doc<"favorites">[];
 };
 
-function FileCardActions({ file }: FileCardProps) {
+function FileCardActions({
+  file,
+  isFavorited,
+}: {
+  file: Doc<"files">;
+  isFavorited: boolean;
+}) {
   const { toast } = useToast();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const deleteFile = useMutation(api.files.deleteFile);
+  const toggleFavorite = useMutation(api.files.toggleFavorite);
 
   function handleDelete() {
     deleteFile({ fileId: file._id });
@@ -57,6 +69,7 @@ function FileCardActions({ file }: FileCardProps) {
       variant: "success",
     });
   }
+
   return (
     <>
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
@@ -83,6 +96,20 @@ function FileCardActions({ file }: FileCardProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem
+            onClick={() => {
+              toggleFavorite({ fileId: file._id });
+            }}
+            className="flex gap-1 text-red-500 cursor-pointer items-center"
+          >
+            <StarIcon
+              className={cn("w-4 h-4", {
+                "fill-red-500 text-red-500": isFavorited,
+              })}
+            />
+            {isFavorited ? "Unfavorite" : "Favorite"}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
             onClick={() => setIsAlertOpen(true)}
             className="flex gap-1 text-red-500 cursor-pointer items-center"
           >
@@ -94,7 +121,7 @@ function FileCardActions({ file }: FileCardProps) {
   );
 }
 
-export function FileCard({ file }: FileCardProps) {
+export function FileCard({ file, favorites }: FileCardProps) {
   const typesIcons = {
     image: <ImageIcon />,
     application: <FileTextIcon />,
@@ -102,6 +129,10 @@ export function FileCard({ file }: FileCardProps) {
   } as unknown as Record<Doc<"files">["type"], ReactNode>;
 
   const fileUrl = useQuery(api.files.getFileUrl, { fileId: file.fileId });
+
+  const isFavorited = favorites.some(
+    (favorite) => favorite.fileId === file._id
+  );
 
   return (
     <Card>
@@ -112,7 +143,7 @@ export function FileCard({ file }: FileCardProps) {
         </CardTitle>
 
         <div className="absolute top-2 right-2">
-          <FileCardActions file={file} />
+          <FileCardActions file={file} isFavorited={isFavorited} />
         </div>
       </CardHeader>
 

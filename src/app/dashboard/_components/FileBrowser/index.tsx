@@ -24,7 +24,13 @@ function Placeholder() {
     </div>
   );
 }
-export function FileBrowser({ title }: { title: string }) {
+export function FileBrowser({
+  title,
+  favorites,
+}: {
+  title: string;
+  favorites?: boolean;
+}) {
   const organization = useOrganization();
   const user = useUser();
   const [query, setQuery] = useState("");
@@ -34,7 +40,16 @@ export function FileBrowser({ title }: { title: string }) {
     orgId = organization.organization?.id ?? user.user?.id;
   }
 
-  const files = useQuery(api.files.getFile, orgId ? { orgId, query } : "skip");
+  const files = useQuery(
+    api.files.getFile,
+    orgId ? { orgId, query, favorites } : "skip"
+  );
+
+  const allFavorites = useQuery(
+    api.files.getAllFavorites,
+    orgId ? { orgId } : "skip"
+  );
+
   const isLoading = files === undefined;
 
   return (
@@ -57,7 +72,13 @@ export function FileBrowser({ title }: { title: string }) {
           {files.length === 0 && <Placeholder />}
 
           <div className="grid grid-cols-3 gap-4">
-            {files?.map((file) => <FileCard key={file._id} file={file} />)}
+            {files?.map((file) => (
+              <FileCard
+                key={file._id}
+                file={file}
+                favorites={allFavorites ?? []}
+              />
+            ))}
           </div>
         </>
       )}
