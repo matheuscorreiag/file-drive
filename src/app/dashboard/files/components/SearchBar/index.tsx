@@ -36,7 +36,7 @@ export function SearchBar({
   }
 
   return (
-    <div>
+    <div className="w-full">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -46,9 +46,13 @@ export function SearchBar({
             control={form.control}
             name="query"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormControl>
-                  <Input placeholder="Your file name" {...field} />
+                  <Input
+                    placeholder="Your file name"
+                    className="w-full"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

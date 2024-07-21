@@ -64,14 +64,22 @@ export function FileBrowser({
       {!isLoading && (
         <>
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-4xl font-bold">{title}</h1>
-            <SearchBar query={query} setQuery={setQuery} />
+            <h1 className="text-2xl whitespace-nowrap md:text-4xl font-bold">
+              {title}
+            </h1>
+            <div className="hidden md:block mx-4">
+              <SearchBar query={query} setQuery={setQuery} />
+            </div>
+
             <UploadButton />
+          </div>
+          <div className="block md:hidden mb-8 w-full">
+            <SearchBar query={query} setQuery={setQuery} />
           </div>
 
           {files.length === 0 && <Placeholder />}
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {files?.map((file) => (
               <FileCard
                 key={file._id}
