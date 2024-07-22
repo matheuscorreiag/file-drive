@@ -3,5 +3,5 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
 export default clerkMiddleware();
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/dashboard", "/(api|trpc)(.*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/dashboard/files", "/(api|trpc)(.*)"],
 };

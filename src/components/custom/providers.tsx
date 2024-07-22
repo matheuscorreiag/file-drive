@@ -17,7 +17,11 @@ const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY as string;
 
 export default function Providers({ children }: Props) {
   return (
-    <ClerkProvider publishableKey={publishableKey}>
+    <ClerkProvider
+      publishableKey={publishableKey}
+      signInFallbackRedirectUrl={"/dashboard/files"}
+      signInForceRedirectUrl={"/dashboard/files"}
+    >
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         {children}
       </ConvexProviderWithClerk>
