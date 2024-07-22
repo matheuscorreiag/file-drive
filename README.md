@@ -9,25 +9,27 @@
 - **File Upload**: Upload multiple files with ease.
 - **File Management**: Organize files into organizations
 
+
+## Live Preview
+For a live preview check out the https://file-drive-neon.vercel.app
+
+
+
 ## Installation
 
 1. Clone the repository:
-   ``bash
-   git clone https://github.com/matheuscorreiag/file-drive.git``
+   ```bash
+   git clone https://github.com/matheuscorreiag/file-drive.git
+   ```
 2. Install the dependencies: 
      ```bash
-   bun install```
- 4. Deploy your convex functions with 
-   ``bash
-    npx convex dev``
- 5. Then run the development server:
-    ``bash
-    bun run dev``
-
-***Note**: Make sure you create a .env.local like the .env.example*
-
-
-
+   bun install
+   ```
+ 3. Deploy your convex functions with 
+```bash
+    npx convex dev
+```
+**Note:** create a .env.local like the .env.example on the repo*
 ## Live Preview
 For a live preview check out the https://file-drive-neon.vercel.app
 
