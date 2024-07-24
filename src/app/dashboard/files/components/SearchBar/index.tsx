@@ -6,7 +6,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -15,10 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Dispatch, SetStateAction } from "react";
 
 export function SearchBar({
-  query,
   setQuery,
 }: {
-  query: string;
   setQuery: Dispatch<SetStateAction<string>>;
 }) {
   const formSchema = z.object({
@@ -68,7 +65,7 @@ export function SearchBar({
             {form.formState.isSubmitting && (
               <Loader2 className="h-4 w-4 animate-spin" />
             )}
-            <SearchIcon /> Search
+            <SearchIcon className="w-4 h-4" /> Search
           </Button>
         </form>
       </Form>

@@ -9,21 +9,8 @@ import { FileCard } from "@/app/dashboard/files/components/FileCard";
 import { Loader2 } from "lucide-react";
 import { SearchBar } from "@/app/dashboard/files/components/SearchBar";
 import { useState } from "react";
+import { Placeholder } from "@/app/dashboard/_components/Placeholder";
 
-function Placeholder() {
-  return (
-    <div className="flex flex-col gap-4 w-full items-center mt-12">
-      <Image
-        alt="A image of a picture and a directory of files"
-        width={300}
-        height={300}
-        src="/empty.svg"
-      />
-      <div className="text-2xl"> You have no files, upload one now!</div>
-      <UploadButton />
-    </div>
-  );
-}
 export function FileBrowser({
   title,
   favorites,
@@ -42,12 +29,12 @@ export function FileBrowser({
 
   const files = useQuery(
     api.files.getFile,
-    orgId ? { orgId, query, favorites } : "skip"
+    orgId ? { orgId, query, favorites } : "skip",
   );
 
   const allFavorites = useQuery(
     api.files.getAllFavorites,
-    orgId ? { orgId } : "skip"
+    orgId ? { orgId } : "skip",
   );
 
   const isLoading = files === undefined;
@@ -68,13 +55,13 @@ export function FileBrowser({
               {title}
             </h1>
             <div className="hidden md:block mx-4">
-              <SearchBar query={query} setQuery={setQuery} />
+              <SearchBar setQuery={setQuery} />
             </div>
 
             <UploadButton />
           </div>
           <div className="block md:hidden mb-8 w-full">
-            <SearchBar query={query} setQuery={setQuery} />
+            <SearchBar setQuery={setQuery} />
           </div>
 
           {files.length === 0 && <Placeholder />}

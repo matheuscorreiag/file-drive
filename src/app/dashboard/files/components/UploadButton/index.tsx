@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import {
