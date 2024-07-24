@@ -7,7 +7,7 @@ import { Id } from "./_generated/dataModel";
 async function hasAcessToOrg(
   ctx: QueryCtx | MutationCtx,
   tokenIdentifier: string,
-  orgId: string
+  orgId: string,
 ) {
   const user = await getUser(ctx, tokenIdentifier);
 
@@ -23,7 +23,7 @@ async function hasAcessToOrg(
 
 async function hasAccessToFile(
   ctx: QueryCtx | MutationCtx,
-  fileId: Id<"files">
+  fileId: Id<"files">,
 ) {
   const identidy = await ctx.auth.getUserIdentity();
 
@@ -40,7 +40,7 @@ async function hasAccessToFile(
   const hasAccess = await hasAcessToOrg(
     ctx,
     identidy.tokenIdentifier,
-    file.orgId
+    file.orgId,
   );
 
   if (!hasAccess) {
@@ -50,7 +50,7 @@ async function hasAccessToFile(
   const user = await ctx.db
     .query("users")
     .withIndex("by_tokenIdentifier", (q) =>
-      q.eq("tokenIdentifier", identidy.tokenIdentifier)
+      q.eq("tokenIdentifier", identidy.tokenIdentifier),
     )
     .first();
 
@@ -76,7 +76,7 @@ export const createFile = mutation({
     const hasAccess = await hasAcessToOrg(
       ctx,
       identidy.tokenIdentifier,
-      args.orgId
+      args.orgId,
     );
 
     if (!hasAccess) {
@@ -116,7 +116,7 @@ export const getFile = query({
       const user = await ctx.db
         .query("users")
         .withIndex("by_tokenIdentifier", (q) =>
-          q.eq("tokenIdentifier", identidy.tokenIdentifier)
+          q.eq("tokenIdentifier", identidy.tokenIdentifier),
         )
         .first();
 
@@ -127,12 +127,12 @@ export const getFile = query({
       const favorites = await ctx.db
         .query("favorites")
         .withIndex("by_userId_orgId_fileId", (q) =>
-          q.eq("userId", user._id).eq("orgId", args.orgId)
+          q.eq("userId", user._id).eq("orgId", args.orgId),
         )
         .collect();
 
       files = files.filter((file) =>
-        favorites.some((favorite) => favorite.fileId === file._id)
+        favorites.some((favorite) => favorite.fileId === file._id),
       );
     }
 
@@ -154,21 +154,6 @@ export const generateUploadUrl = mutation(async (ctx) => {
   }
 
   return await ctx.storage.generateUploadUrl();
-});
-
-export const deleteFile = mutation({
-  args: {
-    fileId: v.id("files"),
-  },
-  async handler(ctx, args) {
-    const access = await hasAccessToFile(ctx, args.fileId);
-
-    if (!access) {
-      throw new ConvexError("Not authorized");
-    }
-
-    await ctx.db.delete(args.fileId);
-  },
 });
 
 export const getFileUrl = query({
@@ -206,7 +191,7 @@ export const toggleFavorite = mutation({
         q
           .eq("userId", user._id)
           .eq("orgId", file.orgId)
-          .eq("fileId", args.fileId)
+          .eq("fileId", args.fileId),
       )
       .first();
 
@@ -236,7 +221,7 @@ export const getAllFavorites = query({
     const hasAccess = await hasAcessToOrg(
       ctx,
       identity.tokenIdentifier,
-      args.orgId
+      args.orgId,
     );
 
     if (!hasAccess) {
@@ -246,7 +231,7 @@ export const getAllFavorites = query({
     const user = await ctx.db
       .query("users")
       .withIndex("by_tokenIdentifier", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .first();
 
@@ -257,7 +242,7 @@ export const getAllFavorites = query({
     const response = await ctx.db
       .query("favorites")
       .withIndex("by_userId_orgId_fileId", (q) =>
-        q.eq("userId", user._id).eq("orgId", args.orgId)
+        q.eq("userId", user._id).eq("orgId", args.orgId),
       )
       .collect();
 
@@ -266,5 +251,26 @@ export const getAllFavorites = query({
     console.log("response", response);
 
     return response;
+  },
+});
+
+export const assignFileToDelete = mutation({
+  args: {
+    fileId: v.id("files"),
+  },
+  async handler(ctx, args) {
+    const access = await hasAccessToFile(ctx, args.fileId);
+
+    if (!access) {
+      throw new ConvexError("Not authorized");
+    }
+
+    const { file } = access;
+
+    await ctx.db.patch(file._id, {
+      on_trash: true,
+    });
+
+    return file;
   },
 });

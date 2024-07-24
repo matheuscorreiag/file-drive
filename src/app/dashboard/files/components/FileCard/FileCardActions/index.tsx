@@ -32,11 +32,11 @@ export function FileCardActions({
 }) {
   const { toast } = useToast();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const deleteFile = useMutation(api.files.deleteFile);
+  const assignFileToDelete = useMutation(api.files.assignFileToDelete);
   const toggleFavorite = useMutation(api.files.toggleFavorite);
 
   function handleDelete() {
-    deleteFile({ fileId: file._id });
+    assignFileToDelete({ fileId: file._id });
     setIsAlertOpen(false);
 
     toast({

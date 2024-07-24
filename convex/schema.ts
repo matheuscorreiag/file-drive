@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export const fileTypes = v.union(
   v.literal("image"),
   v.literal("csv"),
-  v.literal("pdf")
+  v.literal("pdf"),
 );
 export default defineSchema({
   files: defineTable({
@@ -12,6 +12,7 @@ export default defineSchema({
     type: fileTypes,
     orgId: v.string(),
     fileId: v.id("_storage"),
+    on_trash: v.optional(v.boolean()),
   }).index("by_orgId", ["orgId"]),
 
   users: defineTable({
