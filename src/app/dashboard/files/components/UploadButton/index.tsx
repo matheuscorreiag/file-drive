@@ -143,7 +143,7 @@ export function UploadButton() {
                 <FormField
                   control={form.control}
                   name="file"
-                  render={({ field: { onChange }, ...field }) => (
+                  render={() => (
                     <FormItem>
                       <FormLabel>File</FormLabel>
                       <FormControl>

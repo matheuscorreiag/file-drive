@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { UploadButton } from "@/app/dashboard/files/components/UploadButton";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
